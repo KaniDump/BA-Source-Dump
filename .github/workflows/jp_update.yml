@@ -78,7 +78,7 @@ jobs:
         run: |
           git lfs install
           
-          find . -type f -size +50M -exec git lfs track {} \;
+          find ./jp_data -type f -size +50M -exec git lfs track {} \;
 
           if [ -f .gitattributes ]; then
             git add .gitattributes
