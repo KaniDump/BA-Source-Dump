@@ -74,12 +74,18 @@ jobs:
 
       - name: Configure Git LFS
         if: steps.check_diff.outputs.changed == 'true'
+        shell: bash
         run: |
           git lfs install
           
           find . -type f -size +50M -exec git lfs track {} \;
 
-          git add .gitattributes
+          if [ -f .gitattributes ]; then
+            git add .gitattributes
+            echo ".gitattributes has been updated"
+          else
+            echo "No files larger than 50MB were found."
+          fi
 
       - name: Commit and Push Update
         if: steps.check_diff.outputs.changed == 'true'
