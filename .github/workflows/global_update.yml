@@ -2,8 +2,8 @@ name: Dump Global Update
 
 on:
   schedule:
-    # Run every Tuesday at 03:00, 05:00, and 09:00 UTC
-    - cron: '0 3,5,9 * * 2'
+    # Run every Tuesday at 05:00 and 09:00 UTC
+    - cron: '0 5,9 * * 2'
     # Run everyday at 07:00 UTC
     - cron: '0 7 * * *'
   workflow_dispatch:
