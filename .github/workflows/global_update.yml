@@ -1,0 +1,165 @@
+name: Dump Global Update
+
+on:
+  schedule:
+    # Run every Tuesday at 03:00, 05:00, and 09:00 UTC
+    - cron: '0 3,5,9 * * 2'
+    # Run everyday at 07:00 UTC
+    - cron: '0 7 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  dump-global-update:
+    environment: "GitHub Action"
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+        
+      - name: Setup .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.13.x'
+
+      - name: Install Dependencies
+        run: pip install -r requirements.txt
+
+      - name: Get APK & Dumper
+        run: python getApkData.py --region global
+      
+      - name: Configure Git
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+
+      - name: Run Dumper
+        run: python getGlobalVersion.py
+
+      - name: Switch Branch
+        run: git checkout global-dump
+      
+      - name: Check config.json changed
+        id: check_diff
+        shell: bash
+        run: |
+          config_file="global_data/config.json"
+          changed_flag=false
+
+          if git ls-tree -r HEAD --name-only | grep -Fxq "$config_file"; then
+            if ! git diff --quiet HEAD -- "$config_file"; then
+              echo "$config_file is different, apply changes."
+              changed_flag=true
+            else
+              echo "$config_file is identical, no changes needed."
+              # changed_flag remains false
+            fi
+          else
+            echo "$config_file does not exist. Added the file."
+            changed_flag=true
+          fi
+
+          echo "changed=$changed_flag" >> $GITHUB_OUTPUT
+
+      - name: Configure Git LFS
+        if: steps.check_diff.outputs.changed == 'true'
+        run: |
+          git lfs install
+          
+          find . -type f -size +50M -exec git lfs track {} \;
+
+          git add .gitattributes
+
+      - name: Commit and Push Update
+        if: steps.check_diff.outputs.changed == 'true'
+        shell: bash
+        run: |
+          raw_game_url=$(jq -r '.ServerInfoDataUrl' global_data/config.json)
+          raw_catalog=$(jq -r '.ConnectionGroups[0].OverrideConnectionGroups | .[-1].AddressablesCatalogUrlRoot' global_data/config.json)
+          
+          game_version=$(jq -r '.latest_build_version' global_data/config.json)
+          resource_path=$(jq -r '.patch.resource_path' global_data/config.json)
+          catalog_id=$(echo "$resource_path" | sed -n 's#.*/com\.nexon\.bluearchive/\([^/]*\)/.*#\1#p')
+          catalog_version=$(jq -r '.patch_version' global_data/resources.json)
+          
+          commit_msg="${game_version}_${catalog_version}_${catalog_id}"
+          
+          git add global_data/*
+          git commit -m "$commit_msg"
+          git push origin global-dump
+      
+      - name: Send update to Discord
+        if: steps.check_diff.outputs.changed == 'true'
+        shell: bash
+        run: |
+          commit_hash=$(git rev-parse HEAD)
+          commit_url="https://github.com/${GITHUB_REPOSITORY}/commit/${commit_hash}"
+          prepath_raw_link="https://github.com/${GITHUB_REPOSITORY}/raw/${commit_hash}/global_data/"
+          treepath_link="https://github.com/${GITHUB_REPOSITORY}/tree/${commit_hash}/global_data/"
+
+          config_link="${prepath_raw_link}/config.json"
+          resources_link="${prepath_raw_link}/resources.json"
+          dump_data_link="${prepath_raw_link}/cs/il2cpp.cs"
+          fbs_v1_data_link="${prepath_raw_link}/BlueArchiveV1.fbs"
+          fbs_v2_data_link="${prepath_raw_link}/BlueArchiveV2.fbs"
+          dll_files="${treepath_link}/dll"
+          disassembler_files="${treepath_link}/ida_disassember"
+
+          game_version=$(jq -r '.latest_build_version' global_data/config.json)
+          resource_path=$(jq -r '.patch.resource_path' global_data/config.json)
+          catalog_id=$(echo "$resource_path" | sed -n 's#.*/com\.nexon\.bluearchive/\([^/]*\)/.*#\1#p')
+          catalog_version=$(jq -r '.patch_version' global_data/resources.json)
+
+          embed_description=$(cat <<EOF
+          **Game Info**
+          Game Version: ${game_version}
+          Resource Data: [${catalog_id}](${resource_path})
+          Resource Version: ${catalog_version}
+          Resource Id: ${catalog_id}
+
+          **Game Files**
+          Config Data: [config.json](${config_link})
+          Resources Data: [resources.json](${resources_link})
+          Dump Data: [il2cpp.cs](${dump_data_link})
+          FBS V1 (DummyDll Dump): [BlueArchiveV1.fbs](${fbs_v1_data_link})
+          FBS V2 (Assembly Dump): [BlueArchiveV2.fbs](${fbs_v2_data_link})
+          DummyDLL Files: [DummyDll](${dll_files})
+          Disassembler Files: [Disassembler](${disassembler_files})
+          EOF
+          )
+
+          timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+
+          payload=$(jq -n \
+            --arg title "Global Config Update" \
+            --arg description "$embed_description" \
+            --arg url "$commit_url" \
+            --arg timestamp "$timestamp" \
+            '{
+              "embeds": [
+                {
+                  "title": $title,
+                  "description": $description,
+                  "url": $url,
+                  "color": 5793266,
+                  "timestamp": $timestamp
+                }
+              ]
+            }')
+
+          curl -H "Content-Type: application/json" \
+               -X POST \
+               -d "$payload" \
+               "${{ secrets.DISCORD_WEBHOOK_URL }}"
+          echo "Discord notification sent."
