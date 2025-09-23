@@ -126,7 +126,7 @@ jobs:
           Catalog Version: ${catalog_version}
           Catalog Url: ${catalog_id}
 
-          **Game Data**
+          **Game Files**
           Config Data: [config.json](${config_link})
           Dump Data: [il2cpp.cs](${dump_data_link})
           FBS V1 (DummyDll Dump): [BlueArchiveV1.fbs](${fbs_v1_data_link})
