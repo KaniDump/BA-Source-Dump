@@ -50,27 +50,17 @@ jobs:
       - name: Switch Branch
         run: git checkout jp-dump
 
-      - name: Check config.json changed
+      - name: Check if config.json changed
         id: check_diff
         shell: bash
         run: |
-          config_file="jp_data/config.json"
-          changed_flag=false
-
-          if git ls-tree -r HEAD --name-only | grep -Fxq "$config_file"; then
-            if ! git diff --quiet HEAD -- "$config_file"; then
-              echo "$config_file is different, apply changes."
-              changed_flag=true
-            else
-              echo "$config_file is identical, no changes needed."
-              # changed_flag remains false
-            fi
+          if git diff --quiet HEAD^ -- "jp_data/config.json"; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+            echo "✅ The file is identical to the previous commit."
           else
-            echo "$config_file does not exist. Added the file."
-            changed_flag=true
+            echo "changed=true" >> $GITHUB_OUTPUT
+            echo "⚠️ The file has been modified."
           fi
-
-          echo "changed=$changed_flag" >> $GITHUB_OUTPUT
 
       - name: Configure Git LFS
         if: steps.check_diff.outputs.changed == 'true'
@@ -117,7 +107,6 @@ jobs:
           fbs_v1_data_link="${prepath_raw_link}/BlueArchiveV1.fbs"
           fbs_v2_data_link="${prepath_raw_link}/BlueArchiveV2.fbs"
           dll_files="${treepath_link}/dll"
-          disassembler_files="${treepath_link}/ida_disassember"
 
           raw_game_url=$(jq -r '.ServerInfoDataUrl' jp_data/config.json)
           game_url=$(echo "$raw_game_url" | sed -n 's#.*/\([^/]*\)\.json#\1#p')
@@ -132,13 +121,12 @@ jobs:
           Catalog Version: ${catalog_version}
           Catalog Url: ${catalog_id}
 
-          **Game Files**
+          **Game Data**
           Config Data: [config.json](${config_link})
           Dump Data: [il2cpp.cs](${dump_data_link})
           FBS V1 (DummyDll Dump): [BlueArchiveV1.fbs](${fbs_v1_data_link})
           FBS V2 (Assembly Dump): [BlueArchiveV2.fbs](${fbs_v2_data_link})
           DummyDLL Files: [DummyDll](${dll_files})
-          Disassembler Files: [Disassembler](${disassembler_files})
           EOF
           )
 

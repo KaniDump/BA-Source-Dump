@@ -30,17 +30,17 @@ if __name__ == "__main__":
     print("Dumping il2cpp data...")
     il2cppDumper = Il2CppInspectorDumperCLI(il2cpp_exec_path, libil2cpp_path, metadata_path)
     il2cppDumper.dump(data_dir)
-    il2cppDumper.dump(os.path.join(data_dir, "ida_disassember"), use_dissambler=True, dissambler_option="IDA")
+    # il2cppDumper.dump(os.path.join(data_dir, "ida_disassember"), use_dissambler=True, dissambler_option="IDA")
     # il2cppDumper.dump(os.path.join(data_dir, "ghidra_disassember"), use_dissambler=True, dissambler_option="Ghidra")
 
     # Generate fbs both for V1 and V2
     print("Generating fbs...")
-    fbsDumper = FbsDumperCLI(fbsdumper_exec_path, dummydll_dir, libil2cpp_path)
-    fbsDumper.dump(data_dir, "V1", "BlueArchiveV1.fbs")
-    fbsDumper.dump(data_dir, "V2", "BlueArchiveV2.fbs")
+    fbsDumper = FbsDumperCLI(fbsdumper_exec_path, dummydll_dir)
+    fbsDumper.dump(data_dir, "BlueArchiveV1.fbs")
+    fbsDumper.dump(data_dir, "BlueArchiveV2.fbs", libil2cpp_path)
 
     # Copy assembly & metadata
-    print("Copying assembly & metadata...")
+    # print("Copying assembly & metadata...")
     # shutil.copy(libil2cpp_path, os.path.join(data_dir, "libil2cpp.so"))
     # shutil.copy(metadata_path, os.path.join(data_dir, "global-metadata.dat"))
 

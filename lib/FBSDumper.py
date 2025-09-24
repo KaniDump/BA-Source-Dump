@@ -4,22 +4,18 @@ import os
 class FbsDumperCLI:
     def __init__(self,
             executable_path: str,
-            dummy_dll_dir: str,
-            il2cpp_library: str):
+            dummy_dll_dir: str):
         if not os.path.exists(executable_path):
             raise FileNotFoundError(f"FbsDumper executable not found at: {executable_path}")
         if not os.path.exists(dummy_dll_dir):
             raise FileNotFoundError(f"Dummy DLL directory not found at: {dummy_dll_dir}")
-        if not os.path.exists(il2cpp_library):
-            raise FileNotFoundError(f"Library file not found at: {il2cpp_library}")
         self.executable_path = executable_path
         self.dummy_dll_dir = dummy_dll_dir
-        self.il2cpp_library = il2cpp_library
 
     def dump(self, 
             output_directory,
-            fbs_version="V2",
             output_file_name="BlueArchive.fbs",
+            library_file=None,
             custom_namespace=None,
             force_snake_case=False, 
             namespace_to_look_for=None):
@@ -29,18 +25,18 @@ class FbsDumperCLI:
 
         command = [
             self.executable_path,
-            "-d", self.dummy_dll_dir,
-            "-a", self.il2cpp_library,
-            "-o", full_output_file_path,
-            "-dv", fbs_version
+            "-d", self.dummy_dll_dir
         ]
-
+        if library_file is not None:
+            command.extend(["-a", library_file])
         if custom_namespace is not None:
             command.extend(["-n", custom_namespace])
         if force_snake_case:
             command.append("-s")
         if namespace_to_look_for is not None:
             command.extend(["-nl", namespace_to_look_for])
+        if full_output_file_path is not None:
+            command.extend(["-o", full_output_file_path])
         
         print("Executing command:", " ".join(command))
         

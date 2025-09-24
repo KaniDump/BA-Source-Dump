@@ -35,9 +35,9 @@ if __name__ == "__main__":
     il2cppDownloader.download()
     FileExtractor(il2cppDownloader.local_filepath, lib_dir, "").extract_il2cppData()
 
-    fbsDumperUrl = "https://github.com/ArkanDash/FbsDumper/releases/download/v1.1.0/FbsDumper-v1.1.0-linux-x64.zip"
+    fbsDumperUrl = "https://github.com/ArkanDash/FbsDumper/releases/download/v2.1.0/FbsDumper-v2.1.0-linux-x64.zip"
     if os_system == "Windows":
-        fbsDumperUrl = "https://github.com/ArkanDash/FbsDumper/releases/download/v1.1.0/FbsDumper-v1.1.0-win-x64.zip"
+        fbsDumperUrl = "https://github.com/ArkanDash/FbsDumper/releases/download/v2.1.0/FbsDumper-v2.1.0-win-x64.zip"
     fbsDumperDownload = FileDownloader(fbsDumperUrl, lib_dir, "fbsDumper.zip")
     fbsDumperDownload.download()
     FileExtractor(fbsDumperDownload.local_filepath, lib_dir, "").extract_fbsdumper()
