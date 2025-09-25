@@ -54,13 +54,22 @@ jobs:
         id: check_diff
         shell: bash
         run: |
-          if git diff --quiet HEAD^ -- "global_data/config.json"; then
-            echo "changed=false" >> $GITHUB_OUTPUT
-            echo "✅ The file is identical to the previous commit."
+          config_file="global_data/config.json"
+          changed_flag=false
+
+          if git ls-tree -r origin/global-dump --name-only | grep -Fxq "$config_file"; then
+            if git diff --quiet origin/global-dump -- "$config_file"; then
+              echo "✅ The file is identical to the previous commit."
+            else
+              echo "⚠️ The file has been modified."
+              changed_flag=true
+            fi
           else
-            echo "changed=true" >> $GITHUB_OUTPUT
-            echo "⚠️ The file has been modified."
+            echo "⚠️ The file does not exist. Add the file."
+            changed_flag=true
           fi
+
+          echo "changed=$changed_flag" >> $GITHUB_OUTPUT
 
       - name: Configure Git LFS
         if: steps.check_diff.outputs.changed == 'true'
