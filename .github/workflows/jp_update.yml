@@ -14,7 +14,7 @@ permissions:
 jobs:
   dump-jp-update:
     environment: "GitHub Action"
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout Repository
@@ -22,11 +22,10 @@ jobs:
         with:
           fetch-depth: 0
           lfs: true
-    
+
       - name: Update remote branch references
-        shell: bash
         run: git fetch --all --tags
-        
+
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
         with:
@@ -36,13 +35,18 @@ jobs:
         uses: actions/setup-python@v4
         with:
           python-version: '3.13.x'
+          
+      - name: Install Dependencies for Ubuntu
+        run: |
+          sudo apt-get update
+          sudo apt-get install git-lfs jq
 
-      - name: Install Dependencies
+      - name: Install Python Dependencies
         run: pip install -r requirements.txt
 
       - name: Get APK & Dumper
         run: python getApkData.py --region jp
-      
+
       - name: Configure Git
         run: |
           git config --local user.email "action@github.com"
@@ -50,13 +54,12 @@ jobs:
 
       - name: Run Dumper
         run: python getJPVersion.py
-      
+
       - name: Switch Branch
         run: git checkout jp-dump
 
       - name: Check if config.json changed
         id: check_diff
-        shell: bash
         run: |
           config_file="jp_data/config.json"
           changed_flag=false
@@ -86,7 +89,6 @@ jobs:
 
       - name: Configure Git LFS
         if: steps.check_diff.outputs.changed == 'true'
-        shell: bash
         run: |
           git lfs install
           
@@ -98,11 +100,11 @@ jobs:
           else
             echo "No files larger than 50MB were found."
           fi
-      
+
       - name: Commit and Push Update
         if: steps.check_diff.outputs.changed == 'true'
-        shell: bash
         run: |
+          # jq and sed commands are cross-platform compatible in bash
           raw_game_url=$(jq -r '.ServerInfoDataUrl' jp_data/config.json)
           raw_catalog=$(jq -r '.ConnectionGroups[0].OverrideConnectionGroups | .[-1].AddressablesCatalogUrlRoot' jp_data/config.json)
           
@@ -114,10 +116,9 @@ jobs:
           git add jp_data
           git commit -m "$commit_msg"
           git push origin jp-dump
-      
+
       - name: Send update to Discord
         if: steps.check_diff.outputs.changed == 'true'
-        shell: bash
         run: |
           commit_hash=$(git rev-parse HEAD)
           commit_url="https://github.com/${GITHUB_REPOSITORY}/commit/${commit_hash}"
@@ -172,7 +173,7 @@ jobs:
             }')
 
           curl -H "Content-Type: application/json" \
-               -X POST \
-               -d "$payload" \
-               "${{ secrets.DISCORD_WEBHOOK_URL }}"
+              -X POST \
+              -d "$payload" \
+              "${{ secrets.DISCORD_WEBHOOK_URL }}"
           echo "Discord notification sent."
