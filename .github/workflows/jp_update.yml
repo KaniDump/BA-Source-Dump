@@ -49,8 +49,7 @@ jobs:
       
       - name: Set executable permissions for dumper
         run: |
-          chmod +x ./dump_lib/Il2CppInspector/Il2CppInspector.Redux.CLI
-          chmod +x ./dump_lib/FbsDumper/FbsDumper
+          find ./dump_lib -type f -exec chmod +x {} \;
 
       - name: Configure Git
         run: |
