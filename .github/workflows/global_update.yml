@@ -65,8 +65,6 @@ jobs:
           NEW_HASH=$(sha256sum "$config_file" | awk '{print $1}')
           
           # Get the SHA256 hash of the file content from the last commit on the remote branch
-          # We use `git show` to read the file content directly from the commit history
-          # and pipe it to sha256sum.
           OLD_HASH=$(git show origin/global-dump:"$config_file" | sha256sum | awk '{print $1}')
           
           echo "--- Hash Comparison ---"
@@ -105,9 +103,6 @@ jobs:
         if: steps.check_diff.outputs.changed == 'true'
         shell: bash
         run: |
-          raw_game_url=$(jq -r '.ServerInfoDataUrl' global_data/config.json)
-          raw_catalog=$(jq -r '.ConnectionGroups[0].OverrideConnectionGroups | .[-1].AddressablesCatalogUrlRoot' global_data/config.json)
-          
           game_version=$(jq -r '.latest_build_version' global_data/config.json)
           resource_path=$(jq -r '.patch.resource_path' global_data/config.json)
           catalog_id=$(echo "$resource_path" | sed -n 's#.*/com\.nexon\.bluearchive/\([^/]*\)/.*#\1#p')
@@ -115,7 +110,7 @@ jobs:
           
           commit_msg="${game_version}_${catalog_version}_${catalog_id}"
           
-          git add global_data/*
+          git add global_data
           git commit -m "$commit_msg"
           git push origin global-dump
       

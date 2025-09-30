@@ -111,7 +111,7 @@ jobs:
           
           commit_msg="${game_url}_${catalog}"
           
-          git add jp_data/*
+          git add jp_data
           git commit -m "$commit_msg"
           git push origin jp-dump
       
