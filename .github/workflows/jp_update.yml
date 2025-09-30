@@ -61,20 +61,25 @@ jobs:
           config_file="jp_data/config.json"
           changed_flag=false
 
-          if git ls-tree -r origin/jp-dump --name-only | grep -Fxq "$config_file"; then
-            if git diff --quiet --ignore-cr-at-eol origin/jp-dump -- "$config_file"; then
-              echo "✅ The file is identical to the previous commit."
-            else
-              echo "⚠️ The file has been modified."
-              changed_flag=true
+          # Get the SHA256 hash of the newly generated file
+          NEW_HASH=$(sha256sum "$config_file" | awk '{print $1}')
+          
+          # Get the SHA256 hash of the file content from the last commit on the remote branch
+          OLD_HASH=$(git show origin/jp-dump:"$config_file" | sha256sum | awk '{print $1}')
+          
+          echo "--- Hash Comparison ---"
+          echo "OLD_HASH (origin/jp-dump) : $OLD_HASH"
+          echo "NEW_HASH (Local): $NEW_HASH"
+          echo "-----------------------"
 
-              echo "--- Actual Difference Found ---"
-              git diff --ignore-cr-at-eol origin/global-dump -- "$config_file"
-              echo "-----------------------------"
-            fi
-          else
-            echo "⚠️ The file does not exist. Add the file."
+          if [ -z "$OLD_HASH" ]; then
+            echo "⚠️ File does not exist on remote branch. Treat as changed."
             changed_flag=true
+          elif [ "$OLD_HASH" != "$NEW_HASH" ]; then
+            echo "⚠️ Hashes differ. File has been modified."
+            changed_flag=true
+          else
+            echo "✅ Hashes are identical. No content change detected."
           fi
 
           echo "changed=$changed_flag" >> $GITHUB_OUTPUT
