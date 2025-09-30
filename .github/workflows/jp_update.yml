@@ -22,6 +22,10 @@ jobs:
         with:
           fetch-depth: 0
           lfs: true
+    
+      - name: Update remote branch references
+        shell: bash
+        run: git fetch --all --tags
         
       - name: Setup .NET SDK
         uses: actions/setup-dotnet@v4
