@@ -62,11 +62,15 @@ jobs:
           changed_flag=false
 
           if git ls-tree -r origin/jp-dump --name-only | grep -Fxq "$config_file"; then
-            if git diff --quiet origin/jp-dump -- "$config_file"; then
+            if git diff --quiet --ignore-cr-at-eol origin/jp-dump -- "$config_file"; then
               echo "✅ The file is identical to the previous commit."
             else
               echo "⚠️ The file has been modified."
               changed_flag=true
+
+              echo "--- Actual Difference Found ---"
+              git diff --ignore-cr-at-eol origin/global-dump -- "$config_file"
+              echo "-----------------------------"
             fi
           else
             echo "⚠️ The file does not exist. Add the file."
