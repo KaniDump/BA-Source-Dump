@@ -38,20 +38,35 @@ jobs:
 
       - name: Install Python Dependencies
         run: pip install -r requirements.txt
-
-      - name: Get APK & Dumper
-        run: python getApkData.py --region jp
-
+        
       - name: Configure Git
         run: |
           git config --local user.email "action@github.com"
           git config --local user.name "GitHub Action"
 
+      - name: Get APK & Dumper
+        run: python getApkData.py --region jp
+        
       - name: Run Dumper
         run: python getJPVersion.py
 
+      - name: Save content temporary
+        id: save_data
+        shell: bash
+        run: |
+          TEMP_DIR="$RUNNER_TEMP/jp_update_data"
+          mkdir -p "$TEMP_DIR"
+          cp -r jp_data "$TEMP_DIR/"
+          echo "temp_path=$TEMP_DIR/jp_data" >> $GITHUB_OUTPUT
+
       - name: Switch Branch
         run: git checkout jp-dump
+
+      - name: Restore content
+        shell: bash
+        run: |
+          TEMP_PATH="${{ steps.save_data.outputs.temp_path }}"
+          cp -r "$TEMP_PATH" .
 
       - name: Check if config.json changed
         id: check_diff
