@@ -14,7 +14,7 @@ permissions:
 jobs:
   dump-global-update:
     environment: "GitHub Action"
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
       - name: Checkout Repository
@@ -36,20 +36,11 @@ jobs:
         with:
           python-version: '3.13.x'
 
-      - name: Install Dependencies for Ubuntu
-        run: |
-          sudo apt-get update
-          sudo apt-get install git-lfs jq
-
       - name: Install Python Dependencies
         run: pip install -r requirements.txt
 
       - name: Get APK & Dumper
         run: python getApkData.py --region global
-      
-      - name: Set executable permissions for dumper
-        run: |
-          find ./dump_lib -type f -exec chmod +x {} \;
       
       - name: Configure Git
         run: |
@@ -64,6 +55,7 @@ jobs:
       
       - name: Check if config.json changed
         id: check_diff
+        shell: bash
         run: |
           config_file="global_data/config.json"
           changed_flag=false
@@ -93,6 +85,7 @@ jobs:
 
       - name: Configure Git LFS
         if: steps.check_diff.outputs.changed == 'true'
+        shell: bash
         run: |
           git lfs install
           
@@ -107,6 +100,7 @@ jobs:
 
       - name: Commit and Push Update
         if: steps.check_diff.outputs.changed == 'true'
+        shell: bash
         run: |
           game_version=$(jq -r '.latest_build_version' global_data/config.json)
           resource_path=$(jq -r '.patch.resource_path' global_data/config.json)
@@ -121,6 +115,7 @@ jobs:
       
       - name: Send update to Discord
         if: steps.check_diff.outputs.changed == 'true'
+        shell: bash
         run: |
           commit_hash=$(git rev-parse HEAD)
           commit_url="https://github.com/${GITHUB_REPOSITORY}/commit/${commit_hash}"
