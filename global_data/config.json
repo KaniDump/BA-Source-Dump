@@ -1,31 +1,31 @@
 {
     "api_version": "v1.1",
     "market_game_id": "com.nexon.bluearchive",
-    "latest_build_version": "1.82.376243",
-    "latest_build_number": "376243",
-    "min_build_version": "1.82.376243",
-    "min_build_number": "376243",
+    "latest_build_version": "1.82.378581",
+    "latest_build_number": "378581",
+    "min_build_version": "1.82.378581",
+    "min_build_number": "378581",
     "patch": {
-        "patch_version": 1469,
-        "resource_path": "https://ba.dn.nexoncdn.co.kr/com.nexon.bluearchive/b97c05ca58a24270/resource-data.json",
+        "patch_version": 1480,
+        "resource_path": "https://ba.dn.nexoncdn.co.kr/com.nexon.bluearchive/006e3bfdaffb4ec8/resource-data.json",
         "bdiff_path": [
             {
-                "1468": "https://ba.dn.nexoncdn.co.kr/com.nexon.bluearchive/nxpatch/66fea0f8035943c0/bdiff-data.json"
+                "1474": "https://ba.dn.nexoncdn.co.kr/com.nexon.bluearchive/nxpatch/59e49a607b3c4865/bdiff-data.json"
             },
             {
-                "1466": "https://ba.dn.nexoncdn.co.kr/com.nexon.bluearchive/nxpatch/1b687ce1a65d4ba9/bdiff-data.json"
+                "1473": "https://ba.dn.nexoncdn.co.kr/com.nexon.bluearchive/nxpatch/81c66282faba4886/bdiff-data.json"
             },
             {
-                "1465": "https://ba.dn.nexoncdn.co.kr/com.nexon.bluearchive/nxpatch/e1f877b806364ed5/bdiff-data.json"
+                "1472": "https://ba.dn.nexoncdn.co.kr/com.nexon.bluearchive/nxpatch/590ea2377a6b4a19/bdiff-data.json"
             },
             {
-                "1464": "https://ba.dn.nexoncdn.co.kr/com.nexon.bluearchive/nxpatch/27b8c36d7c0a4a21/bdiff-data.json"
+                "1471": "https://ba.dn.nexoncdn.co.kr/com.nexon.bluearchive/nxpatch/e6a28b67cf3f43ec/bdiff-data.json"
             },
             {
-                "1455": "https://ba.dn.nexoncdn.co.kr/com.nexon.bluearchive/nxpatch/c3588ae7f33c4b51/bdiff-data.json"
+                "1470": "https://ba.dn.nexoncdn.co.kr/com.nexon.bluearchive/nxpatch/31de07db2e8d47bc/bdiff-data.json"
             },
             {
-                "1454": "https://ba.dn.nexoncdn.co.kr/com.nexon.bluearchive/nxpatch/4566a429d76549c2/bdiff-data.json"
+                "1469": "https://ba.dn.nexoncdn.co.kr/com.nexon.bluearchive/nxpatch/2c936e8d6cdd4d99/bdiff-data.json"
             }
         ]
     }
