@@ -426,21 +426,23 @@ enum StatType : int {
 	ExDamagedRatioDecrease = 66,
 	EnhanceExDamageRate = 67,
 	ReduceExDamagedRate = 68,
-	HealRate = 69,
-	HealLightArmorRate = 70,
-	HealHeavyArmorRate = 71,
-	HealUnarmedRate = 72,
-	HealElasticArmorRate = 73,
-	HealNormalArmorRate = 74,
-	HealedExplosionRate = 75,
-	HealedPierceRate = 76,
-	HealedMysticRate = 77,
-	HealedSonicRate = 78,
-	HealedNormalRate = 79,
-	GrowthScore = 80,
-	CharacterBulletTypeEnhanceRate = 81,
-	MaxCostIncrease = 82,
-	Max = 83
+	EnhanceBasicsDamageRate = 69,
+	ReduceBasicsDamagedRate = 70,
+	HealRate = 71,
+	HealLightArmorRate = 72,
+	HealHeavyArmorRate = 73,
+	HealUnarmedRate = 74,
+	HealElasticArmorRate = 75,
+	HealNormalArmorRate = 76,
+	HealedExplosionRate = 77,
+	HealedPierceRate = 78,
+	HealedMysticRate = 79,
+	HealedSonicRate = 80,
+	HealedNormalRate = 81,
+	GrowthScore = 82,
+	CharacterBulletTypeEnhanceRate = 83,
+	MaxCostIncrease = 84,
+	Max = 85
 }
 
 enum Rarity : int {
@@ -519,7 +521,11 @@ enum MailType : int {
 	FromCS = 23,
 	ExpiryChangeCurrency = 24,
 	ExpiryBattlePassItem = 25,
-	FreeProductReward = 26
+	FreeProductReward = 26,
+	Temp_4 = 27,
+	Temp_5 = 28,
+	Temp_6 = 29,
+	ProductGooglePointReward = 30
 }
 
 enum StarGoalType : int {
@@ -3961,7 +3967,8 @@ enum Club : int {
 	FreightLogisticsDepartment = 51,
 	OccultClub = 52,
 	PrefectBrigade = 53,
-	FreeTradeCartel = 54
+	FreeTradeCartel = 54,
+	NicomediasTroop = 55
 }
 
 enum School : int {
@@ -5097,6 +5104,22 @@ enum FurnitureFunctionType : int {
 	InteractionBGMPlay = 4
 }
 
+enum GachaTicketType : int {
+	None = 0,
+	PackageThreeStar = 1,
+	ThreeStar = 2,
+	TwoStar = 3,
+	Normal = 4,
+	NormalOnce = 5,
+	SelectRecruit = 6,
+	PackagePropertyThreeStar = 7,
+	Temp_1 = 8,
+	PackageAcademyThreeStar = 9,
+	SelectPickup = 10,
+	SelectPickupOnce = 11,
+	PackageLimitedThreeStar = 12
+}
+
 enum CraftNodeTier : int {
 	Base = 0,
 	Node01 = 1,
@@ -5115,22 +5138,6 @@ enum GachaGroupType : int {
 enum ConsumeCondition : int {
 	And = 0,
 	Or = 1
-}
-
-enum GachaTicketType : int {
-	None = 0,
-	PackageThreeStar = 1,
-	ThreeStar = 2,
-	TwoStar = 3,
-	Normal = 4,
-	NormalOnce = 5,
-	SelectRecruit = 6,
-	PackagePropertyThreeStar = 7,
-	Temp_1 = 8,
-	PackageAcademyThreeStar = 9,
-	SelectPickup = 10,
-	SelectPickupOnce = 11,
-	PackageLimitedThreeStar = 12
 }
 
 enum TacticSpeed : int {
@@ -5511,6 +5518,12 @@ enum OperatorCondition : int {
 	MinigameTBGItemUse = 27
 }
 
+enum CharacterVoiceOverridePriority : int {
+	None = 0,
+	High = 1,
+	Low = 2
+}
+
 enum StoreType : int {
 	None = 0,
 	GooglePlay = 1,
@@ -5575,7 +5588,8 @@ enum PurchaseSourceType : int {
 	Product = 1,
 	ProductMonthly = 2,
 	ProductBattlePass = 3,
-	ProductSelect = 4
+	ProductSelect = 4,
+	ProductGooglePoint = 5
 }
 
 enum ProductCategory : int {
@@ -5585,7 +5599,8 @@ enum ProductCategory : int {
 	Package = 3,
 	GachaDirect = 4,
 	TimeLimit = 5,
-	BattlePass = 6
+	BattlePass = 6,
+	GooglePoint = 7
 }
 
 enum ProductDisplayTag : int {
@@ -7310,15 +7325,16 @@ table ArenaLevelSectionExcel {
 }
 
 table ArenaMapExcel {
-	UniqueId: long; // index 0x1
-	TerrainType: long; // index 0x2
-	TerrainTypeLocalizeKey: string; // index 0x3
-	ImagePath: string; // index 0x4
-	GroundGroupId: long; // index 0x5
-	GroundGroupNameLocalizeKey: string; // index 0x6
-	StartRank: long; // index 0x7
-	EndRank: long; // index 0x8
-	GroundId: long; // index 0x9
+	ArenaSeasonId: long; // index 0x1
+	UniqueId: long; // index 0x2
+	TerrainType: long; // index 0x3
+	TerrainTypeLocalizeKey: string; // index 0x4
+	ImagePath: string; // index 0x5
+	GroundGroupId: long; // index 0x6
+	GroundGroupNameLocalizeKey: string; // index 0x7
+	StartRank: long; // index 0x8
+	EndRank: long; // index 0x9
+	GroundId: long; // index 0xA
 }
 
 table ArenaNPCExcel {
@@ -7360,6 +7376,7 @@ table ArenaSeasonExcel {
 	SeasonEndDate: string; // index 0x3
 	SeasonGroupLimit: long; // index 0x4
 	PrevSeasonId: long; // index 0x5
+	InformationGroupId: long; // index 0x6
 }
 
 table AssistEchelonTypeConvertExcel {
@@ -8077,21 +8094,23 @@ table CharacterStatExcel {
 	ExDamagedRatioDecrease: long; // index 0x3E
 	EnhanceExDamageRate: long; // index 0x3F
 	ReduceExDamagedRate: long; // index 0x40
-	HealRate: long; // index 0x41
-	HealLightArmorRate: long; // index 0x42
-	HealHeavyArmorRate: long; // index 0x43
-	HealUnarmedRate: long; // index 0x44
-	HealElasticArmorRate: long; // index 0x45
-	HealNormalArmorRate: long; // index 0x46
-	HealedExplosionRate: long; // index 0x47
-	HealedPierceRate: long; // index 0x48
-	HealedMysticRate: long; // index 0x49
-	HealedSonicRate: long; // index 0x4A
-	HealedNormalRate: long; // index 0x4B
-	StreetBattleAdaptation: TerrainAdaptationStat; // index 0x4C
-	OutdoorBattleAdaptation: TerrainAdaptationStat; // index 0x4D
-	IndoorBattleAdaptation: TerrainAdaptationStat; // index 0x4E
-	RegenCost: long; // index 0x4F
+	EnhanceBasicsDamageRate: long; // index 0x41
+	ReduceBasicsDamagedRate: long; // index 0x42
+	HealRate: long; // index 0x43
+	HealLightArmorRate: long; // index 0x44
+	HealHeavyArmorRate: long; // index 0x45
+	HealUnarmedRate: long; // index 0x46
+	HealElasticArmorRate: long; // index 0x47
+	HealNormalArmorRate: long; // index 0x48
+	HealedExplosionRate: long; // index 0x49
+	HealedPierceRate: long; // index 0x4A
+	HealedMysticRate: long; // index 0x4B
+	HealedSonicRate: long; // index 0x4C
+	HealedNormalRate: long; // index 0x4D
+	StreetBattleAdaptation: TerrainAdaptationStat; // index 0x4E
+	OutdoorBattleAdaptation: TerrainAdaptationStat; // index 0x4F
+	IndoorBattleAdaptation: TerrainAdaptationStat; // index 0x50
+	RegenCost: long; // index 0x51
 }
 
 table CharacterStatLimitExcel {
@@ -8926,7 +8945,6 @@ table EventContentConcentrationCardExcel {
 	CardId: long; // index 0x2
 	Rarity: Rarity; // index 0x3
 	ImagePath: string; // index 0x4
-	BackImagePath: string; // index 0x5
 }
 
 table EventContentConcentrationExcel {
@@ -8936,6 +8954,7 @@ table EventContentConcentrationExcel {
 	MaxCardOpenCount: int; // index 0x4
 	InstantClearRound: int; // index 0x5
 	CardBoardPrefabs: string; // index 0x6
+	BackImagePath: string; // index 0x7
 }
 
 table EventContentConcentrationRewardExcel {
@@ -9185,23 +9204,24 @@ table EventContentPlayGuideExcel {
 table EventContentScenarioExcel {
 	Id: long; // index 0x1
 	EventContentId: long; // index 0x2
-	ReplayDisplayGroup: int; // index 0x3
-	Order: long; // index 0x4
-	RecollectionNumber: long; // index 0x5
-	IsRecollection: bool; // index 0x6
-	IsMeetup: bool; // index 0x7
-	IsOmnibus: bool; // index 0x8
-	ScenarioGroupId: [long]; // index 0x9
-	ScenarioConditionType: EventContentScenarioConditionType; // index 0xA
-	ConditionAmount: long; // index 0xB
-	ConditionEventContentId: long; // index 0xC
-	ClearedScenarioGroupId: long; // index 0xD
-	RecollectionSummaryLocalizeScenarioId: uint; // index 0xE
-	RecollectionResource: string; // index 0xF
-	IsRecollectionHorizon: bool; // index 0x10
-	RewardParcelType: [ParcelType]; // index 0x11
-	RewardId: [long]; // index 0x12
-	RewardAmount: [int]; // index 0x13
+	ReturnScenarioPlay: bool; // index 0x3
+	ReplayDisplayGroup: int; // index 0x4
+	Order: long; // index 0x5
+	RecollectionNumber: long; // index 0x6
+	IsRecollection: bool; // index 0x7
+	IsMeetup: bool; // index 0x8
+	IsOmnibus: bool; // index 0x9
+	ScenarioGroupId: [long]; // index 0xA
+	ScenarioConditionType: EventContentScenarioConditionType; // index 0xB
+	ConditionAmount: long; // index 0xC
+	ConditionEventContentId: long; // index 0xD
+	ClearedScenarioGroupId: long; // index 0xE
+	RecollectionSummaryLocalizeScenarioId: uint; // index 0xF
+	RecollectionResource: string; // index 0x10
+	IsRecollectionHorizon: bool; // index 0x11
+	RewardParcelType: [ParcelType]; // index 0x12
+	RewardId: [long]; // index 0x13
+	RewardAmount: [int]; // index 0x14
 }
 
 table EventContentSeasonExcel {
@@ -9304,6 +9324,14 @@ table EventContentSpineDialogOffsetExcel {
 	SpineOffsetY: float; // index 0x5
 	DialogOffsetX: float; // index 0x6
 	DialogOffsetY: float; // index 0x7
+}
+
+table EventContentSpineDisplayPeriodExcel {
+	EventContentId: long; // index 0x1
+	DialogCategory: DialogCategory; // index 0x2
+	CostumeUniqueId: long; // index 0x3
+	ShowPeriodFrom: string; // index 0x4
+	ShowPeriodTo: string; // index 0x5
 }
 
 table EventContentSpoilerPopupExcel {
@@ -9610,6 +9638,16 @@ table FurnitureTemplateExcel {
 	ImagePath: string; // index 0x4
 }
 
+table GachaCombinedCostExcel {
+	GroupId: long; // index 0x1
+	Priority: long; // index 0x2
+	ConsumeGachaTicketType: GachaTicketType; // index 0x3
+	ConsumeGachaTicketTypeAmount: long; // index 0x4
+	ConsumeParcelType: ParcelType; // index 0x5
+	ConsumeParcelId: long; // index 0x6
+	ConsumeParcelAmount: long; // index 0x7
+}
+
 table GachaCraftNodeExcel {
 	ID: long; // index 0x1
 	Tier: long; // index 0x2
@@ -9672,14 +9710,15 @@ table GoodsExcel {
 	ConsumeCondition: [ConsumeCondition]; // index 0x8
 	ConsumeGachaTicketType: [GachaTicketType]; // index 0x9
 	ConsumeGachaTicketTypeAmount: [long]; // index 0xA
-	ProductIdAOS: long; // index 0xB
-	ProductIdiOS: long; // index 0xC
-	ConsumeExtraStep: [long]; // index 0xD
-	ConsumeExtraAmount: [long]; // index 0xE
-	State: int; // index 0xF
-	ParcelType: [ParcelType]; // index 0x10
-	ParcelId: [long]; // index 0x11
-	ParcelAmount: [long]; // index 0x12
+	CombinedGachaCostId: long; // index 0xB
+	ProductIdAOS: long; // index 0xC
+	ProductIdiOS: long; // index 0xD
+	ConsumeExtraStep: [long]; // index 0xE
+	ConsumeExtraAmount: [long]; // index 0xF
+	State: int; // index 0x10
+	ParcelType: [ParcelType]; // index 0x11
+	ParcelId: [long]; // index 0x12
+	ParcelAmount: [long]; // index 0x13
 }
 
 table GroundExcel {
@@ -10895,6 +10934,7 @@ table ObstacleStatExcel {
 	EnhanceStructureRate: long; // index 0xD
 	EnhanceNormalArmorRate: long; // index 0xE
 	ReduceExDamagedRate: long; // index 0xF
+	ReduceBasicsDamagedRate: long; // index 0x10
 }
 
 table OpenConditionExcel {
@@ -10933,6 +10973,7 @@ table OperatorExcel {
 	TextLocalizeKey: string; // index 0xA
 	VoiceId: [uint]; // index 0xB
 	OperatorWaitQueue: bool; // index 0xC
+	CharacterVoiceOverridePriority: CharacterVoiceOverridePriority; // index 0xD
 }
 
 table ParcelAutoSynthExcel {
